@@ -177,7 +177,7 @@ def upload_file(file_obj):
 
 def demo():
     with gr.Blocks(theme="base") as demo:
-        vector_db = gr.Variable()
+        vector_db = gr.State()
         # qa_chain = gr.Variable()
         
         gr.Markdown(
@@ -236,4 +236,3 @@ def demo():
 
 if __name__ == "__main__":
     demo()
-    
