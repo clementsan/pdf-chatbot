@@ -231,7 +231,7 @@ def demo():
         msg.submit(conversation, [msg, chatbot], [msg, chatbot], queue=False)
         submit_btn.click(conversation, inputs=[msg, chatbot], outputs=[msg, chatbot], queue=False)
         clear_btn.click(lambda: None, None, chatbot, queue=False)
-    demo.queue(concurrency_limit=10).launch(debug=True)
+    demo.queue().launch(debug=True)
 
 
 if __name__ == "__main__":
