@@ -5,3 +5,4 @@ langchain
 tqdm
 accelerate
 pypdf
+chromadb
