@@ -215,7 +215,7 @@ def demo():
                 qachain_btn = gr.Button("QA chain Initialization...")
 
         with gr.Tab("Step 3 - Conversation"):
-            chatbot = gr.Chatbot(height=600)
+            chatbot = gr.Chatbot(height=350)
             with gr.Row():
                 msg = gr.Textbox(placeholder="Type message", container=True)
             with gr.Row():
