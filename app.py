@@ -185,9 +185,9 @@ def demo():
         # qa_chain = gr.Variable()
         
         gr.Markdown(
-        """<center><h2> Document-based chatbot</center></h2>
-        <h3>Ask any questions about your PDF documents (single or multiple)</h3>
-        <i>Note: chatbot performs question-answering using Langchain and LLMs</i>
+        """<center><h2>Document-based chatbot with memory</center></h2>
+        <h3>Ask any questions (and follow-up) about your PDF documents</h3>
+        <i>Note: this chatbot leverages LangChain for retrieval-augmented generation with memory.</i>
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
