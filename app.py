@@ -23,10 +23,11 @@ default_persist_directory = './chroma_HF/'
 llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
 llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
 llm_name3 = "meta-llama/Llama-2-7b-chat-hf"
-llm_name4 = "mosaicml/mpt-7b-instruct"
-llm_name5 = "tiiuae/falcon-7b-instruct"
-llm_name6 = "google/flan-t5-xxl"
-list_llm = [llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6]
+llm_name4 = "microsoft/phi-2"
+llm_name5 = "mosaicml/mpt-7b-instruct"
+llm_name6 = "tiiuae/falcon-7b-instruct"
+llm_name7 = "google/flan-t5-xxl"
+list_llm = [llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
