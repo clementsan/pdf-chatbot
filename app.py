@@ -19,13 +19,15 @@ import accelerate
 
 
 default_persist_directory = './chroma_HF/'
-default_llm_name1 = "tiiuae/falcon-7b-instruct"
-default_llm_name2 = "google/flan-t5-xxl"
-default_llm_name3 = "mosaicml/mpt-7b-instruct"
-default_llm_name4 = "meta-llama/Llama-2-7b-chat-hf"
-default_llm_name5 = "mistralai/Mistral-7B-Instruct-v0.1"
-list_llm = [default_llm_name1, default_llm_name2, default_llm_name3, default_llm_name4, default_llm_name5]
 
+llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
+llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
+llm_name3 = "meta-llama/Llama-2-7b-chat-hf"
+llm_name4 = "mosaicml/mpt-7b-instruct"
+llm_name5 = "tiiuae/falcon-7b-instruct"
+llm_name6 = "google/flan-t5-xxl"
+list_llm = [llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6]
+list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
 def load_doc(list_file_path, chunk_size, chunk_overlap):
@@ -203,8 +205,8 @@ def demo():
             
         with gr.Tab("Step 2 - Initializing QA chain"):
             with gr.Row():
-                llm_btn = gr.Radio(["falcon-7b-instruct", "flan-t5-xxl", "mpt-7b-instruct", "Llama-2-7b-chat-hf", "Mistral-7B-Instruct-v0.1"], \
-                    label="LLM", value = "falcon-7b-instruct", type="index", info="Choose your LLM model")
+                llm_btn = gr.Radio(list_llm_simple, \
+                    label="LLM", value = list_llm_simple[0], type="index", info="Choose your LLM model")
             with gr.Accordion("Advanced options - LLM", open=False):
                 slider_temperature = gr.Slider(minimum = 0.0, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
                 slider_maxtokens = gr.Slider(minimum = 256, maximum = 4096, value=1024, step=24, label="Max Tokens", info="Model max tokens", interactive=True)
