@@ -94,7 +94,8 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     progress(0.5, desc="Initializing HF Hub...")
     llm = HuggingFaceHub(
         repo_id=llm_model, 
-        model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
+        model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k,\
+        "trust_remote_code": True, "torch_dtype": torch.bfloat16}
     )
     
     progress(0.5, desc="Defining buffer memory...")
