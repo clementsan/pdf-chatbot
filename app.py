@@ -197,9 +197,9 @@ def demo():
                 db_btn = gr.Radio(["ChromaDB"], label="Vector database", value = "ChromaDB", type="index", info="Choose your vector database")
             with gr.Accordion("Advanced options - Text splitter", open=False):
                 with gr.Row():
-                    slider_chunk_size = gr.Slider(minimum = 100, maximum = 1000, value=600, step=20, label="Chunk size", info="Chunk size", interactive=True)
+                    slider_chunk_size = gr.Slider(minimum = 100, maximum = 1000, value=500, step=20, label="Chunk size", info="Chunk size", interactive=True)
                 with gr.Row():
-                    slider_chunk_overlap = gr.Slider(minimum = 10, maximum = 200, value=50, step=10, label="Chunk overlap", info="Chunk overlap", interactive=True)
+                    slider_chunk_overlap = gr.Slider(minimum = 10, maximum = 200, value=40, step=10, label="Chunk overlap", info="Chunk overlap", interactive=True)
             with gr.Row():
                 db_progress = gr.Textbox(label="Database Initialization", value="None")
             with gr.Row():
