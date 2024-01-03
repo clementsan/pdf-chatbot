@@ -191,32 +191,32 @@ def demo():
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
-                document = gr.Files(height=100, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload PDF Documents")
+                document = gr.Files(height=100, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
                 # upload_btn = gr.UploadButton("Loading document...", height=100, file_count="multiple", file_types=["pdf"], scale=1)
             with gr.Row():
-                db_btn = gr.Radio(["ChromaDB"], label="Vector database", value = "ChromaDB", type="index", info="Choose your vector database")
-            with gr.Accordion("Advanced options - Text splitter", open=False):
+                db_btn = gr.Radio(["ChromaDB"], label="Vector database type", value = "ChromaDB", type="index", info="Choose your vector database")
+            with gr.Accordion("Advanced options - Document text splitter", open=False):
                 with gr.Row():
                     slider_chunk_size = gr.Slider(minimum = 100, maximum = 1000, value=500, step=20, label="Chunk size", info="Chunk size", interactive=True)
                 with gr.Row():
                     slider_chunk_overlap = gr.Slider(minimum = 10, maximum = 200, value=40, step=10, label="Chunk overlap", info="Chunk overlap", interactive=True)
             with gr.Row():
-                db_progress = gr.Textbox(label="Database Initialization", value="None")
+                db_progress = gr.Textbox(label="Vector database initialization", value="None")
             with gr.Row():
                 db_btn = gr.Button("Generating vector database...")
             
         with gr.Tab("Step 2 - Initializing QA chain"):
             with gr.Row():
                 llm_btn = gr.Radio(list_llm_simple, \
-                    label="LLM", value = list_llm_simple[0], type="index", info="Choose your LLM model")
-            with gr.Accordion("Advanced options - LLM", open=False):
+                    label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
+            with gr.Accordion("Advanced options - LLM model", open=False):
                 slider_temperature = gr.Slider(minimum = 0.0, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
                 slider_maxtokens = gr.Slider(minimum = 224, maximum = 4096, value=1024, step=32, label="Max Tokens", info="Model max tokens", interactive=True)
                 slider_topk = gr.Slider(minimum = 1, maximum = 10, value=3, step=1, label="top-k samples", info="Model top-k samples", interactive=True)
             with gr.Row():
                 llm_progress = gr.Textbox(value="None",label="QA chain Initialization")
             with gr.Row():
-                qachain_btn = gr.Button("QA chain Initialization...")
+                qachain_btn = gr.Button("Question-Answering chain Initialization...")
 
         with gr.Tab("Step 3 - Conversation"):
             chatbot = gr.Chatbot(height=300)
