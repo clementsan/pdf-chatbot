@@ -205,7 +205,10 @@ def demo():
             with gr.Row():
                 db_btn = gr.Button("Generating vector database...")
             
-        with gr.Tab("Step 2 - Initializing QA chain"):
+        with gr.Tab("Step 2 - QA chain initialization"):
+            gr.Markdown(
+            """<b>Note:</b> This space uses the free CPU Basic hardware from Hugging Face. The LLM models used below (free inference endpoints) can take some time to generate a reply.
+            """)
             with gr.Row():
                 llm_btn = gr.Radio(list_llm_simple, \
                     label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
@@ -214,11 +217,11 @@ def demo():
                 slider_maxtokens = gr.Slider(minimum = 224, maximum = 4096, value=1024, step=32, label="Max Tokens", info="Model max tokens", interactive=True)
                 slider_topk = gr.Slider(minimum = 1, maximum = 10, value=3, step=1, label="top-k samples", info="Model top-k samples", interactive=True)
             with gr.Row():
-                llm_progress = gr.Textbox(value="None",label="QA chain Initialization")
+                llm_progress = gr.Textbox(value="None",label="QA chain initialization")
             with gr.Row():
-                qachain_btn = gr.Button("Question-Answering chain Initialization...")
+                qachain_btn = gr.Button("Initializing question-answering chain...")
 
-        with gr.Tab("Step 3 - Conversation"):
+        with gr.Tab("Step 3 - Conversation with chatbot"):
             chatbot = gr.Chatbot(height=300)
             with gr.Row():
                 msg = gr.Textbox(placeholder="Type message", container=True)
