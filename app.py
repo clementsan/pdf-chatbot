@@ -98,7 +98,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         "trust_remote_code": True, "torch_dtype": "auto"}
     )
     
-    progress(0.5, desc="Defining buffer memory...")
+    progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True
@@ -185,9 +185,11 @@ def demo():
         # qa_chain = gr.Variable()
         
         gr.Markdown(
-        """<center><h2>Document-based chatbot with memory</center></h2>
-        <h3>Ask any questions (and follow-up) about your PDF documents</h3>
-        <i>Note: this chatbot leverages LangChain for retrieval-augmented generation with memory.</i>
+        """<center><h2>PDF-based chatbot, powered by LangChain and open-source LLMs</center></h2>
+        <h3>Ask any questions about your PDF documents, along with follow-ups</h3>
+        <b>Note:</b> This AI assistant performs retrieval-augmented generation from your PDF documents. \
+        When generating answers, it takes past questions into account (via conversational memory), and points to specific document sources for clarity purposes</i>
+        <b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
@@ -206,9 +208,6 @@ def demo():
                 db_btn = gr.Button("Generating vector database...")
             
         with gr.Tab("Step 2 - QA chain initialization"):
-            gr.Markdown(
-            """<b>Note:</b> This space uses the free CPU Basic hardware from Hugging Face. The LLM models used below (free inference endpoints) can take some time to generate a reply.
-            """)
             with gr.Row():
                 llm_btn = gr.Radio(list_llm_simple, \
                     label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
