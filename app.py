@@ -101,6 +101,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
         memory_key="chat_history",
+        output_key='answer',
         return_messages=True
     )
     # retriever=vector_db.as_retriever(search_type="similarity", search_kwargs={'k': 3})
@@ -113,7 +114,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         chain_type="stuff", 
         memory=memory,
         # combine_docs_chain_kwargs={"prompt": your_prompt})
-        # return_source_documents=True,
+        return_source_documents=True,
         # return_generated_question=True,
         # verbose=True,
     )
@@ -162,11 +163,20 @@ def conversation(message, history):
    
     # Generate response using QA chain
     response = qa_chain({"question": message, "chat_history": formatted_chat_history})
-    # return response['answer']
+    response_answer = response["answer"]
+    response_sources = response["source_documents"]
+    response_source1 = response_sources[0].page_content.strip()
+    response_source2 = response_sources[1].page_content.strip()
+    # Langchain sources are zero-based
+    response_source1_page = response_sources[0].metadata["page"] + 1
+    response_source2_page = response_sources[1].metadata["page"] + 1
+    # print ('chat response: ', response_answer)
+    # print('DB source', response_sources)
     
     # Append user message and response to chat history
-    new_history = history + [(message, response["answer"])]
-    return gr.update(value=""), new_history        
+    new_history = history + [(message, response_answer)]
+    # return gr.update(value=""), new_history, response_sources[0], response_sources[1] 
+    return gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page
     
 
 def upload_file(file_obj):
@@ -188,7 +198,7 @@ def demo():
         """<center><h2>PDF-based chatbot (powered by LangChain and open-source LLMs)</center></h2>
         <h3>Ask any questions about your PDF documents, along with follow-ups</h3>
         <b>Note:</b> This AI assistant performs retrieval-augmented generation from your PDF documents. \
-        When generating answers, it takes past questions into account (via conversational memory), and points to specific document sources for clarity purposes</i>
+        When generating answers, it takes past questions into account (via conversational memory), and includes document references for clarity purposes.</i>
         <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
@@ -199,7 +209,7 @@ def demo():
                 db_btn = gr.Radio(["ChromaDB"], label="Vector database type", value = "ChromaDB", type="index", info="Choose your vector database")
             with gr.Accordion("Advanced options - Document text splitter", open=False):
                 with gr.Row():
-                    slider_chunk_size = gr.Slider(minimum = 100, maximum = 1000, value=500, step=20, label="Chunk size", info="Chunk size", interactive=True)
+                    slider_chunk_size = gr.Slider(minimum = 100, maximum = 1000, value=600, step=20, label="Chunk size", info="Chunk size", interactive=True)
                 with gr.Row():
                     slider_chunk_overlap = gr.Slider(minimum = 10, maximum = 200, value=40, step=10, label="Chunk overlap", info="Chunk overlap", interactive=True)
             with gr.Row():
@@ -222,6 +232,13 @@ def demo():
 
         with gr.Tab("Step 3 - Conversation with chatbot"):
             chatbot = gr.Chatbot(height=300)
+            with gr.Accordion("Advanced - Document references", open=False):
+                with gr.Row():
+                    doc_source1 = gr.Textbox(label="Reference 1", lines=2, container=True, scale=20)
+                    source1_page = gr.Number(label="Page", scale=1)
+                with gr.Row():
+                    doc_source2 = gr.Textbox(label="Reference 2", lines=2, container=True, scale=20)
+                    source2_page = gr.Number(label="Page", scale=1)
             with gr.Row():
                 msg = gr.Textbox(placeholder="Type message", container=True)
             with gr.Row():
@@ -230,13 +247,29 @@ def demo():
             
         # Preprocessing events
         #upload_btn.upload(upload_file, inputs=[upload_btn], outputs=[document])
-        db_btn.click(initialize_database, inputs=[document, slider_chunk_size, slider_chunk_overlap], outputs=[vector_db, db_progress])
-        qachain_btn.click(initialize_LLM, inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], outputs=[llm_progress]).then(lambda: None, None, chatbot, queue=False)
+        db_btn.click(initialize_database, \
+            inputs=[document, slider_chunk_size, slider_chunk_overlap], \
+            outputs=[vector_db, db_progress])
+        qachain_btn.click(initialize_LLM, \
+            inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], \
+            outputs=[llm_progress]).then(lambda:[None,"",0,"",0], \
+            inputs=None, \
+            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            queue=False)
 
         # Chatbot events
-        msg.submit(conversation, [msg, chatbot], [msg, chatbot], queue=False)
-        submit_btn.click(conversation, inputs=[msg, chatbot], outputs=[msg, chatbot], queue=False)
-        clear_btn.click(lambda: None, None, chatbot, queue=False)
+        msg.submit(conversation, \
+            inputs=[msg, chatbot], \
+            outputs=[msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            queue=False)
+        submit_btn.click(conversation, \
+            inputs=[msg, chatbot], \
+            outputs=[msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            queue=False)
+        clear_btn.click(lambda:[None,"",0,"",0], \
+            inputs=None, \
+            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            queue=False)
     demo.queue().launch(debug=True)
 
 
