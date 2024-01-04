@@ -199,7 +199,7 @@ def demo():
         <h3>Ask any questions about your PDF documents, along with follow-ups</h3>
         <b>Note:</b> This AI assistant performs retrieval-augmented generation from your PDF documents. \
         When generating answers, it takes past questions into account (via conversational memory), and includes document references for clarity purposes.</i>
-        <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
+        <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate an output.<br>
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
