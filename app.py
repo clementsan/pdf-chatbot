@@ -185,11 +185,11 @@ def demo():
         # qa_chain = gr.Variable()
         
         gr.Markdown(
-        """<center><h2>PDF-based chatbot, powered by LangChain and open-source LLMs</center></h2>
+        """<center><h2>PDF-based chatbot (powered by LangChain and open-source LLMs)</center></h2>
         <h3>Ask any questions about your PDF documents, along with follow-ups</h3>
         <b>Note:</b> This AI assistant performs retrieval-augmented generation from your PDF documents. \
         When generating answers, it takes past questions into account (via conversational memory), and points to specific document sources for clarity purposes</i>
-        <b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
+        <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
