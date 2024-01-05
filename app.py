@@ -126,7 +126,7 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     # Create list of documents (when valid)
     #file_path = file_obj.name
     list_file_path = [x.name for x in list_file_obj if x is not None]
-    print('list_file_path', list_file_path)
+    # print('list_file_path', list_file_path)
     progress(0.25, desc="Loading document...")
     # Load document and create splits
     doc_splits = load_doc(list_file_path, chunk_size, chunk_overlap)
@@ -139,9 +139,9 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
 
 
 def initialize_LLM(llm_option, llm_temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
-    print("llm_option",llm_option)
+    # print("llm_option",llm_option)
     llm_name = list_llm[llm_option]
-    print("llm_name",llm_name)
+    # print("llm_name",llm_name)
     qa_chain = initialize_llmchain(llm_name, llm_temperature, max_tokens, top_k, vector_db, progress)
     return qa_chain, "Complete!"
 
