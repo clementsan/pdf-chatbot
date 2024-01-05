@@ -107,7 +107,6 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     # retriever=vector_db.as_retriever(search_type="similarity", search_kwargs={'k': 3})
     retriever=vector_db.as_retriever()
     progress(0.8, desc="Defining retrieval chain...")
-    global qa_chain
     qa_chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=retriever,
@@ -119,10 +118,10 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         # verbose=True,
     )
     progress(0.9, desc="Done!")
-    # return qa_chain
+    return qa_chain
 
 
-# Initialize all elements
+# Initialize database
 def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Progress()):
     # Create list of documents (when valid)
     #file_path = file_obj.name
@@ -137,16 +136,14 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     vector_db = create_db(doc_splits)
     progress(0.9, desc="Done!")
     return vector_db, "Complete!"
-    #return qa_chain
 
 
 def initialize_LLM(llm_option, llm_temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
     print("llm_option",llm_option)
     llm_name = list_llm[llm_option]
     print("llm_name",llm_name)
-    initialize_llmchain(llm_name, llm_temperature, max_tokens, top_k, vector_db, progress)
-    return "Complete!"
-    #return qa_chain
+    qa_chain = initialize_llmchain(llm_name, llm_temperature, max_tokens, top_k, vector_db, progress)
+    return qa_chain, "Complete!"
 
 
 def format_chat_history(message, chat_history):
@@ -157,7 +154,7 @@ def format_chat_history(message, chat_history):
     return formatted_chat_history
     
 
-def conversation(message, history):
+def conversation(qa_chain, message, history):
     formatted_chat_history = format_chat_history(message, history)
     #print("formatted_chat_history",formatted_chat_history)
    
@@ -176,7 +173,7 @@ def conversation(message, history):
     # Append user message and response to chat history
     new_history = history + [(message, response_answer)]
     # return gr.update(value=""), new_history, response_sources[0], response_sources[1] 
-    return gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page
+    return qa_chain, gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page
     
 
 def upload_file(file_obj):
@@ -192,7 +189,7 @@ def upload_file(file_obj):
 def demo():
     with gr.Blocks(theme="base") as demo:
         vector_db = gr.State()
-        # qa_chain = gr.Variable()
+        qa_chain = gr.State()
         
         gr.Markdown(
         """<center><h2>PDF-based chatbot (powered by LangChain and open-source LLMs)</center></h2>
@@ -252,19 +249,19 @@ def demo():
             outputs=[vector_db, db_progress])
         qachain_btn.click(initialize_LLM, \
             inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], \
-            outputs=[llm_progress]).then(lambda:[None,"",0,"",0], \
+            outputs=[qa_chain, llm_progress]).then(lambda:[None,"",0,"",0], \
             inputs=None, \
             outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page], \
             queue=False)
 
         # Chatbot events
         msg.submit(conversation, \
-            inputs=[msg, chatbot], \
-            outputs=[msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            inputs=[qa_chain, msg, chatbot], \
+            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
             queue=False)
         submit_btn.click(conversation, \
-            inputs=[msg, chatbot], \
-            outputs=[msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            inputs=[qa_chain, msg, chatbot], \
+            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
             queue=False)
         clear_btn.click(lambda:[None,"",0,"",0], \
             inputs=None, \
