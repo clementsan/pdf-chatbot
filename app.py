@@ -53,7 +53,7 @@ def create_db(splits):
     vectordb = Chroma.from_documents(
         documents=splits,
         embedding=embedding,
-        persist_directory=default_persist_directory
+        # persist_directory=default_persist_directory
     )
     return vectordb
 
