@@ -228,9 +228,12 @@ def demo():
                 llm_btn = gr.Radio(list_llm_simple, \
                     label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
             with gr.Accordion("Advanced options - LLM model", open=False):
-                slider_temperature = gr.Slider(minimum = 0.0, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
-                slider_maxtokens = gr.Slider(minimum = 224, maximum = 4096, value=1024, step=32, label="Max Tokens", info="Model max tokens", interactive=True)
-                slider_topk = gr.Slider(minimum = 1, maximum = 10, value=3, step=1, label="top-k samples", info="Model top-k samples", interactive=True)
+                with gr.Row():
+                    slider_temperature = gr.Slider(minimum = 0.0, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
+                with gr.Row():
+                    slider_maxtokens = gr.Slider(minimum = 224, maximum = 4096, value=1024, step=32, label="Max Tokens", info="Model max tokens", interactive=True)
+                with gr.Row():
+                    slider_topk = gr.Slider(minimum = 1, maximum = 10, value=3, step=1, label="top-k samples", info="Model top-k samples", interactive=True)
             with gr.Row():
                 llm_progress = gr.Textbox(value="None",label="QA chain initialization")
             with gr.Row():
