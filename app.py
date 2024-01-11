@@ -71,7 +71,7 @@ def load_db():
 def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
     progress(0.1, desc="Initializing HF tokenizer...")
     # HuggingFacePipeline uses local model
-    # Warning: it will download model locally...
+    # Note: it will download model locally...
     # tokenizer=AutoTokenizer.from_pretrained(llm_model)
     # progress(0.5, desc="Initializing HF pipeline...")
     # pipeline=transformers.pipeline(
@@ -92,11 +92,20 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     
     # HuggingFaceHub uses HF inference endpoints
     progress(0.5, desc="Initializing HF Hub...")
-    llm = HuggingFaceHub(
-        repo_id=llm_model, 
-        model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k,\
-        "trust_remote_code": True, "torch_dtype": "auto"}
-    )
+    # Use of trust_remote_code as model_kwargs
+    # Warning: langchain issue
+    # URL: https://github.com/langchain-ai/langchain/issues/6080
+    if llm_model == "microsoft/phi-2":
+        llm = HuggingFaceHub(
+            repo_id=llm_model, 
+            model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+        )
+    else:
+        llm = HuggingFaceHub(
+            repo_id=llm_model, 
+            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+            model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
+        )
     
     progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
