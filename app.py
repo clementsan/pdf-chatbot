@@ -221,7 +221,7 @@ def demo():
             with gr.Row():
                 db_progress = gr.Textbox(label="Vector database initialization", value="None")
             with gr.Row():
-                db_btn = gr.Button("Generating vector database...")
+                db_btn = gr.Button("Generate vector database...")
             
         with gr.Tab("Step 2 - QA chain initialization"):
             with gr.Row():
@@ -237,7 +237,7 @@ def demo():
             with gr.Row():
                 llm_progress = gr.Textbox(value="None",label="QA chain initialization")
             with gr.Row():
-                qachain_btn = gr.Button("Initializing question-answering chain...")
+                qachain_btn = gr.Button("Initialize question-answering chain...")
 
         with gr.Tab("Step 3 - Conversation with chatbot"):
             chatbot = gr.Chatbot(height=300)
