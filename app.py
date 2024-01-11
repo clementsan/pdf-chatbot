@@ -18,7 +18,7 @@ import tqdm
 import accelerate
 
 
-default_persist_directory = './chroma_HF/'
+# default_persist_directory = './chroma_HF/'
 
 llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
 llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
