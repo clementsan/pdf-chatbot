@@ -150,7 +150,7 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
 def initialize_LLM(llm_option, llm_temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
     # print("llm_option",llm_option)
     llm_name = list_llm[llm_option]
-    # print("llm_name",llm_name)
+    print("llm_name: ",llm_name)
     qa_chain = initialize_llmchain(llm_name, llm_temperature, max_tokens, top_k, vector_db, progress)
     return qa_chain, "Complete!"
 
