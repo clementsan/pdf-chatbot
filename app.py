@@ -24,10 +24,11 @@ llm_name0 = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
 llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
 llm_name3 = "meta-llama/Llama-2-7b-chat-hf"
-llm_name4 = "microsoft/phi-2"
-llm_name5 = "mosaicml/mpt-7b-instruct"
-llm_name6 = "tiiuae/falcon-7b-instruct"
-llm_name7 = "google/flan-t5-xxl"
+llm_name4 = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+llm_name5 = "microsoft/phi-2"
+llm_name6 = "mosaicml/mpt-7b-instruct"
+llm_name7 = "tiiuae/falcon-7b-instruct"
+llm_name8 = "google/flan-t5-xxl"
 list_llm = [llm_name0, llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
@@ -105,6 +106,11 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         llm = HuggingFaceHub(
             repo_id=llm_model, 
             model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+        )
+    elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
+        llm = HuggingFaceHub(
+            repo_id=llm_model, 
+            model_kwargs={"temperature": temperature, "max_new_tokens": 256, "top_k": top_k, "torch_dtype": "auto"}
         )
     else:
         llm = HuggingFaceHub(
