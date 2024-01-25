@@ -20,6 +20,7 @@ import accelerate
 
 # default_persist_directory = './chroma_HF/'
 
+llm_name0 = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
 llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
 llm_name3 = "meta-llama/Llama-2-7b-chat-hf"
@@ -27,7 +28,7 @@ llm_name4 = "microsoft/phi-2"
 llm_name5 = "mosaicml/mpt-7b-instruct"
 llm_name6 = "tiiuae/falcon-7b-instruct"
 llm_name7 = "google/flan-t5-xxl"
-list_llm = [llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7]
+list_llm = [llm_name0, llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
@@ -62,7 +63,7 @@ def create_db(splits):
 def load_db():
     embedding = HuggingFaceEmbeddings()
     vectordb = Chroma(
-        persist_directory=default_persist_directory, 
+        # persist_directory=default_persist_directory, 
         embedding_function=embedding)
     return vectordb
 
@@ -95,7 +96,12 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     # Use of trust_remote_code as model_kwargs
     # Warning: langchain issue
     # URL: https://github.com/langchain-ai/langchain/issues/6080
-    if llm_model == "microsoft/phi-2":
+    if llm_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
+        llm = HuggingFaceHub(
+            repo_id=llm_model, 
+            model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "load_in_8bit": True}
+        )
+    elif llm_model == "microsoft/phi-2":
         llm = HuggingFaceHub(
             repo_id=llm_model, 
             model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
