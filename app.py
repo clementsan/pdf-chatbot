@@ -29,7 +29,7 @@ llm_name5 = "microsoft/phi-2"
 llm_name6 = "mosaicml/mpt-7b-instruct"
 llm_name7 = "tiiuae/falcon-7b-instruct"
 llm_name8 = "google/flan-t5-xxl"
-list_llm = [llm_name0, llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7]
+list_llm = [llm_name0, llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7, llm_name8]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
