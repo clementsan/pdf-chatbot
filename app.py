@@ -215,7 +215,7 @@ def demo():
         """)
         with gr.Tab("Step 1 - Document pre-processing"):
             with gr.Row():
-                document = gr.Files(height=100, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
+                document = gr.Files(height=50, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
                 # upload_btn = gr.UploadButton("Loading document...", height=100, file_count="multiple", file_types=["pdf"], scale=1)
             with gr.Row():
                 db_btn = gr.Radio(["ChromaDB"], label="Vector database type", value = "ChromaDB", type="index", info="Choose your vector database")
