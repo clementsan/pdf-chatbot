@@ -11,6 +11,9 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.llms import HuggingFaceHub
 
+from pathlib import Path
+import chromadb
+
 from transformers import AutoTokenizer
 import transformers
 import torch
@@ -50,11 +53,14 @@ def load_doc(list_file_path, chunk_size, chunk_overlap):
 
 
 # Create vector database
-def create_db(splits):
+def create_db(splits, collection_name):
     embedding = HuggingFaceEmbeddings()
+    new_client = chromadb.EphemeralClient()
     vectordb = Chroma.from_documents(
         documents=splits,
         embedding=embedding,
+        client=new_client,
+        collection_name=collection_name,
         # persist_directory=default_persist_directory
     )
     return vectordb
@@ -147,16 +153,18 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     # Create list of documents (when valid)
     #file_path = file_obj.name
     list_file_path = [x.name for x in list_file_obj if x is not None]
-    # print('list_file_path', list_file_path)
+    collection_name = Path(list_file_path[0]).stem
+    # print('list_file_path: ', list_file_path)
+    # print('Collection name: ', collection_name)
     progress(0.25, desc="Loading document...")
     # Load document and create splits
     doc_splits = load_doc(list_file_path, chunk_size, chunk_overlap)
     # Create or load Vector database
     progress(0.5, desc="Generating vector database...")
     # global vector_db
-    vector_db = create_db(doc_splits)
+    vector_db = create_db(doc_splits, collection_name)
     progress(0.9, desc="Done!")
-    return vector_db, "Complete!"
+    return vector_db, collection_name, "Complete!"
 
 
 def initialize_LLM(llm_option, llm_temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
@@ -211,6 +219,7 @@ def demo():
     with gr.Blocks(theme="base") as demo:
         vector_db = gr.State()
         qa_chain = gr.State()
+        collection_name = gr.State()
         
         gr.Markdown(
         """<center><h2>PDF-based chatbot (powered by LangChain and open-source LLMs)</center></h2>
@@ -270,7 +279,7 @@ def demo():
         #upload_btn.upload(upload_file, inputs=[upload_btn], outputs=[document])
         db_btn.click(initialize_database, \
             inputs=[document, slider_chunk_size, slider_chunk_overlap], \
-            outputs=[vector_db, db_progress])
+            outputs=[vector_db, collection_name, db_progress])
         qachain_btn.click(initialize_LLM, \
             inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], \
             outputs=[qa_chain, llm_progress]).then(lambda:[None,"",0,"",0], \
