@@ -110,7 +110,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
         llm = HuggingFaceHub(
             repo_id=llm_model, 
-            model_kwargs={"temperature": temperature, "max_new_tokens": 256, "top_k": top_k, "torch_dtype": "auto"}
+            model_kwargs={"temperature": temperature, "max_new_tokens": 250, "top_k": top_k, "torch_dtype": "auto"}
         )
     else:
         llm = HuggingFaceHub(
