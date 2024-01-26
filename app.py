@@ -109,6 +109,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "load_in_8bit": True}
         )
     elif llm_model == "microsoft/phi-2":
+        raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
         llm = HuggingFaceHub(
             repo_id=llm_model, 
             model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
@@ -117,6 +118,12 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         llm = HuggingFaceHub(
             repo_id=llm_model, 
             model_kwargs={"temperature": temperature, "max_new_tokens": 250, "top_k": top_k}
+        )
+    elif llm_model == "meta-llama/Llama-2-7b-chat-hf":
+        raise gr.Error("Llama-2-7b-chat-hf model requires a Pro subscription...")
+        llm = HuggingFaceHub(
+            repo_id=llm_model, 
+            model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
         )
     else:
         llm = HuggingFaceHub(
