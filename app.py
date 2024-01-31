@@ -161,6 +161,7 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     #file_path = file_obj.name
     list_file_path = [x.name for x in list_file_obj if x is not None]
     collection_name = Path(list_file_path[0]).stem
+    collection_name = collection_name[:50]
     # print('list_file_path: ', list_file_path)
     # print('Collection name: ', collection_name)
     progress(0.25, desc="Loading document...")
