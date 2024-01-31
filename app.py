@@ -22,18 +22,11 @@ import accelerate
 
 
 # default_persist_directory = './chroma_HF/'
-
-llm_name0 = "mistralai/Mixtral-8x7B-Instruct-v0.1"
-llm_name1 = "mistralai/Mistral-7B-Instruct-v0.2"
-llm_name2 = "mistralai/Mistral-7B-Instruct-v0.1"
-llm_name3 = "mistralai/Mistral-7B-Instruct-v0.1"
-llm_name4 = "HuggingFaceH4/zephyr-7b-beta"
-llm_name5 = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-llm_name6 = "microsoft/phi-2"
-llm_name7 = "mosaicml/mpt-7b-instruct"
-llm_name8 = "tiiuae/falcon-7b-instruct"
-llm_name9 = "google/flan-t5-xxl"
-list_llm = [llm_name0, llm_name1, llm_name2, llm_name3, llm_name4, llm_name5, llm_name6, llm_name7, llm_name8, llm_name9]
+list_llm = ["mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mistral-7B-Instruct-v0.1", \
+    "HuggingFaceH4/zephyr-7b-beta", "01-ai/Yi-6B-Chat", "meta-llama/Llama-2-7b-chat-hf", \
+    "microsoft/phi-2", "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "mosaicml/mpt-7b-instruct", \
+    "tiiuae/falcon-7b-instruct", "google/flan-t5-xxl"
+]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
