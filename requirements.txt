@@ -6,3 +6,5 @@ tqdm
 accelerate
 pypdf
 chromadb
+auto-gptq
+
