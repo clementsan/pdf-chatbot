@@ -152,16 +152,19 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
 # Initialize database
 def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Progress()):
     # Create list of documents (when valid)
-    #file_path = file_obj.name
     list_file_path = [x.name for x in list_file_obj if x is not None]
+    # Create collection_name for vector database
+    progress(0.1, desc="Creating collection name...")
     collection_name = Path(list_file_path[0]).stem
+    # Fix potential issues from naming convention
+    collection_name = collection_name.replace(" ","-") 
     collection_name = collection_name[:50]
     # print('list_file_path: ', list_file_path)
-    # print('Collection name: ', collection_name)
+    print('Collection name: ', collection_name)
     progress(0.25, desc="Loading document...")
     # Load document and create splits
     doc_splits = load_doc(list_file_path, chunk_size, chunk_overlap)
-    # Create or load Vector database
+    # Create or load vector database
     progress(0.5, desc="Generating vector database...")
     # global vector_db
     vector_db = create_db(doc_splits, collection_name)
