@@ -142,7 +142,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         memory=memory,
         # combine_docs_chain_kwargs={"prompt": your_prompt})
         return_source_documents=True,
-        # return_generated_question=True,
+        return_generated_question=False,
         # verbose=True,
     )
     progress(0.9, desc="Done!")
