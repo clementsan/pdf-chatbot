@@ -209,16 +209,18 @@ def conversation(qa_chain, message, history):
     response_sources = response["source_documents"]
     response_source1 = response_sources[0].page_content.strip()
     response_source2 = response_sources[1].page_content.strip()
+    response_source3 = response_sources[2].page_content.strip()
     # Langchain sources are zero-based
     response_source1_page = response_sources[0].metadata["page"] + 1
     response_source2_page = response_sources[1].metadata["page"] + 1
+    response_source3_page = response_sources[2].metadata["page"] + 1
     # print ('chat response: ', response_answer)
     # print('DB source', response_sources)
     
     # Append user message and response to chat history
     new_history = history + [(message, response_answer)]
     # return gr.update(value=""), new_history, response_sources[0], response_sources[1] 
-    return qa_chain, gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page
+    return qa_chain, gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page, response_source3, response_source3_page
     
 
 def upload_file(file_obj):
@@ -285,6 +287,9 @@ def demo():
                 with gr.Row():
                     doc_source2 = gr.Textbox(label="Reference 2", lines=2, container=True, scale=20)
                     source2_page = gr.Number(label="Page", scale=1)
+                with gr.Row():
+                    doc_source3 = gr.Textbox(label="Reference 3", lines=2, container=True, scale=20)
+                    source3_page = gr.Number(label="Page", scale=1)
             with gr.Row():
                 msg = gr.Textbox(placeholder="Type message", container=True)
             with gr.Row():
@@ -300,21 +305,21 @@ def demo():
             inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], \
             outputs=[qa_chain, llm_progress]).then(lambda:[None,"",0,"",0], \
             inputs=None, \
-            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
 
         # Chatbot events
         msg.submit(conversation, \
             inputs=[qa_chain, msg, chatbot], \
-            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
         submit_btn.click(conversation, \
             inputs=[qa_chain, msg, chatbot], \
-            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
         clear_btn.click(lambda:[None,"",0,"",0], \
             inputs=None, \
-            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page], \
+            outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
     demo.queue().launch(debug=True)
 
