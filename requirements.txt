@@ -1,7 +1,7 @@
 torch
 transformers
 sentence-transformers
-langchain<0.1.2
+langchain
 tqdm
 accelerate
 pypdf
