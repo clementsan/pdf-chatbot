@@ -21,6 +21,7 @@ import tqdm
 import accelerate
 
 
+
 # default_persist_directory = './chroma_HF/'
 list_llm = ["mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mistral-7B-Instruct-v0.1", \
     "HuggingFaceH4/zephyr-7b-beta", "meta-llama/Llama-2-7b-chat-hf", "microsoft/phi-2", \
@@ -157,8 +158,15 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     progress(0.1, desc="Creating collection name...")
     collection_name = Path(list_file_path[0]).stem
     # Fix potential issues from naming convention
+    ## Remove space
     collection_name = collection_name.replace(" ","-") 
+    ## Limit lenght to 50 characters
     collection_name = collection_name[:50]
+    ## Enforce start and end as alphanumeric character
+    if not collection_name[0].isalnum():
+        collection_name[0] = 'A'
+    if not collection_name[-1].isalnum():
+        collection_name[-1] = 'Z'
     # print('list_file_path: ', list_file_path)
     print('Collection name: ', collection_name)
     progress(0.25, desc="Loading document...")
