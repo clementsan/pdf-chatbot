@@ -195,6 +195,8 @@ def conversation(qa_chain, message, history):
     # Generate response using QA chain
     response = qa_chain({"question": message, "chat_history": formatted_chat_history})
     response_answer = response["answer"]
+    if response_answer.find("Helpful Answer:") != -1:
+        response_answer = response_answer.split("Helpful Answer:")[-1]
     response_sources = response["source_documents"]
     response_source1 = response_sources[0].page_content.strip()
     response_source2 = response_sources[1].page_content.strip()
