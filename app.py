@@ -317,7 +317,7 @@ def demo():
             inputs=[qa_chain, msg, chatbot], \
             outputs=[qa_chain, msg, chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
-        clear_btn.click(lambda:[None,"",0,"",0], \
+        clear_btn.click(lambda:[None,"",0,"",0,"",0], \
             inputs=None, \
             outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
