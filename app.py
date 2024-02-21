@@ -303,7 +303,7 @@ def demo():
             outputs=[vector_db, collection_name, db_progress])
         qachain_btn.click(initialize_LLM, \
             inputs=[llm_btn, slider_temperature, slider_maxtokens, slider_topk, vector_db], \
-            outputs=[qa_chain, llm_progress]).then(lambda:[None,"",0,"",0], \
+            outputs=[qa_chain, llm_progress]).then(lambda:[None,"",0,"",0,"",0], \
             inputs=None, \
             outputs=[chatbot, doc_source1, source1_page, doc_source2, source2_page, doc_source3, source3_page], \
             queue=False)
