@@ -1,12 +1,12 @@
 import gradio as gr
 import os
 
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
-from langchain.embeddings import HuggingFaceEmbeddings 
-from langchain.llms import HuggingFacePipeline
+from langchain_community.embeddings import HuggingFaceEmbeddings 
+from langchain_community.llms import HuggingFacePipeline
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.llms import HuggingFaceHub
