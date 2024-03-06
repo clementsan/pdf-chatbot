@@ -13,6 +13,7 @@ from langchain_community.llms import HuggingFaceEndpoint
 
 from pathlib import Path
 import chromadb
+from unidecode import unidecode
 
 from transformers import AutoTokenizer
 import transformers
@@ -188,6 +189,8 @@ def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Pr
     # Fix potential issues from naming convention
     ## Remove space
     collection_name = collection_name.replace(" ","-") 
+    ## ASCII transliterations of Unicode text
+    collection_name = unidecode(collection_name)
     ## Limit lenght to 50 characters
     collection_name = collection_name[:50]
     ## Enforce start and end as alphanumeric character
