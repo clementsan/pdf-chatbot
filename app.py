@@ -109,6 +109,14 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             top_k = top_k,
             load_in_8bit = True,
         )
+    elif llm_model == "HuggingFaceH4/zephyr-7b-gemma-v0.1":
+        raise gr.Error("zephyr-7b-gemma-v0.1 is too large to be loaded automatically on free inference endpoint")
+        llm = HuggingFaceEndpoint(
+            repo_id=llm_model, 
+            temperature = temperature,
+            max_new_tokens = max_tokens,
+            top_k = top_k,
+        )
     elif llm_model == "microsoft/phi-2":
         raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
         llm = HuggingFaceEndpoint(
