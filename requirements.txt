@@ -6,4 +6,4 @@ tqdm
 accelerate
 pypdf
 chromadb
-
+unidecode
