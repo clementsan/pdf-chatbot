@@ -193,8 +193,11 @@ def create_collection_name(filepath):
     ## Remove special characters
     #collection_name = re.findall("[\dA-Za-z]*", collection_name)[0]
     collection_name = re.sub('[^A-Za-z0-9]+', '-', collection_name)
-    ## Limit lenght to 50 characters
+    ## Limit length to 50 characters
     collection_name = collection_name[:50]
+    ## Minimum length of 3 characters
+    if len(collection_name) < 3:
+        collection_name = collection_name + 'xyz'
     print('Filepath: ', filepath)
     print('Collection name: ', collection_name)
     return collection_name
