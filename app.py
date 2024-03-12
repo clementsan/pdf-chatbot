@@ -20,6 +20,7 @@ import transformers
 import torch
 import tqdm 
 import accelerate
+import re
 
 
 
@@ -179,27 +180,33 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     return qa_chain
 
 
+# Generate collection name for vector database
+#  - Use filepath as input, ensuring unicode text
+def create_collection_name(filepath):
+    # Extract filename without extension
+    collection_name = Path(filepath).stem
+    # Fix potential issues from naming convention
+    ## Remove space
+    collection_name = collection_name.replace(" ","-") 
+    ## ASCII transliterations of Unicode text
+    collection_name = unidecode(collection_name)
+    ## Remove special characters
+    #collection_name = re.findall("[\dA-Za-z]*", collection_name)[0]
+    collection_name = re.sub('[^A-Za-z0-9]+', '-', collection_name)
+    ## Limit lenght to 50 characters
+    collection_name = collection_name[:50]
+    print('Filepath: ', filepath)
+    print('Collection name: ', collection_name)
+    return collection_name
+
+
 # Initialize database
 def initialize_database(list_file_obj, chunk_size, chunk_overlap, progress=gr.Progress()):
     # Create list of documents (when valid)
     list_file_path = [x.name for x in list_file_obj if x is not None]
     # Create collection_name for vector database
     progress(0.1, desc="Creating collection name...")
-    collection_name = Path(list_file_path[0]).stem
-    # Fix potential issues from naming convention
-    ## Remove space
-    collection_name = collection_name.replace(" ","-") 
-    ## ASCII transliterations of Unicode text
-    collection_name = unidecode(collection_name)
-    ## Limit lenght to 50 characters
-    collection_name = collection_name[:50]
-    ## Enforce start and end as alphanumeric character
-    if not collection_name[0].isalnum():
-        collection_name[0] = 'A'
-    if not collection_name[-1].isalnum():
-        collection_name[-1] = 'Z'
-    # print('list_file_path: ', list_file_path)
-    print('Collection name: ', collection_name)
+    collection_name = create_collection_name(list_file_path[0])
     progress(0.25, desc="Loading document...")
     # Load document and create splits
     doc_splits = load_doc(list_file_path, chunk_size, chunk_overlap)
