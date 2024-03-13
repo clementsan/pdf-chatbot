@@ -198,6 +198,11 @@ def create_collection_name(filepath):
     ## Minimum length of 3 characters
     if len(collection_name) < 3:
         collection_name = collection_name + 'xyz'
+    ## Enforce start and end as alphanumeric character
+    if not collection_name[0].isalnum():
+        collection_name[0] = 'A'
+    if not collection_name[-1].isalnum():
+        collection_name[-1] = 'Z'
     print('Filepath: ', filepath)
     print('Collection name: ', collection_name)
     return collection_name
