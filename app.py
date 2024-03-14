@@ -111,8 +111,8 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             top_k = top_k,
             load_in_8bit = True,
         )
-    elif llm_model == "HuggingFaceH4/zephyr-7b-gemma-v0.1":
-        raise gr.Error("zephyr-7b-gemma-v0.1 is too large to be loaded automatically on free inference endpoint")
+    elif llm_model in ["HuggingFaceH4/zephyr-7b-gemma-v0.1","mosaicml/mpt-7b-instruct"]:
+        raise gr.Error("LLM model is too large to be loaded automatically on free inference endpoint")
         llm = HuggingFaceEndpoint(
             repo_id=llm_model, 
             temperature = temperature,
