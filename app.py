@@ -200,9 +200,9 @@ def create_collection_name(filepath):
         collection_name = collection_name + 'xyz'
     ## Enforce start and end as alphanumeric character
     if not collection_name[0].isalnum():
-        collection_name[0] = 'A'
+        collection_name = 'A' + collection_name[1:]
     if not collection_name[-1].isalnum():
-        collection_name[-1] = 'Z'
+        collection_name = collection_name[:-1] + 'Z'
     print('Filepath: ', filepath)
     print('Collection name: ', collection_name)
     return collection_name
