@@ -286,7 +286,7 @@ def demo():
         
         gr.Markdown(
         """<center><h2>PDF-based chatbot</center></h2>
-        <h3>Ask any questions about your PDF documents, along with follow-ups</h3>""")
+        <h3>Ask any questions about your PDF documents</h3>""")
         gr.Markdown(
         """<b>Note:</b> This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. \
         The user interface explicitely shows multiple steps to help understand the RAG workflow. 
