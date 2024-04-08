@@ -318,7 +318,7 @@ def demo():
                     label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
             with gr.Accordion("Advanced options - LLM model", open=False):
                 with gr.Row():
-                    slider_temperature = gr.Slider(minimum = 0.0, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
+                    slider_temperature = gr.Slider(minimum = 0.01, maximum = 1.0, value=0.7, step=0.1, label="Temperature", info="Model temperature", interactive=True)
                 with gr.Row():
                     slider_maxtokens = gr.Slider(minimum = 224, maximum = 4096, value=1024, step=32, label="Max Tokens", info="Model max tokens", interactive=True)
                 with gr.Row():
