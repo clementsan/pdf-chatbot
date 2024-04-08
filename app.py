@@ -285,16 +285,21 @@ def demo():
         collection_name = gr.State()
         
         gr.Markdown(
-        """<center><h2>PDF-based chatbot (powered by LangChain and open-source LLMs)</center></h2>
-        <h3>Ask any questions about your PDF documents, along with follow-ups</h3>
-        <b>Note:</b> This AI assistant performs retrieval-augmented generation from your PDF documents. \
-        When generating answers, it takes past questions into account (via conversational memory), and includes document references for clarity purposes.</i>
-        <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate an output.<br>
+        """<center><h2>PDF-based chatbot</center></h2>
+        <h3>Ask any questions about your PDF documents, along with follow-ups</h3>""")
+        gr.Markdown(
+        """<b>Note:</b> This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. \
+        The user interface explicitely shows multiple steps to help understand the RAG workflow. 
+        This chatbot takes past questions into account when generating answers (via conversational memory), and includes document references for clarity purposes.<br>
+        <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
         """)
-        with gr.Tab("Step 1 - Document pre-processing"):
+        
+        with gr.Tab("Step 1 - Upload PDF"):
             with gr.Row():
                 document = gr.Files(height=100, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
                 # upload_btn = gr.UploadButton("Loading document...", height=100, file_count="multiple", file_types=["pdf"], scale=1)
+        
+        with gr.Tab("Step 2 - Process document"):
             with gr.Row():
                 db_btn = gr.Radio(["ChromaDB"], label="Vector database type", value = "ChromaDB", type="index", info="Choose your vector database")
             with gr.Accordion("Advanced options - Document text splitter", open=False):
@@ -305,9 +310,9 @@ def demo():
             with gr.Row():
                 db_progress = gr.Textbox(label="Vector database initialization", value="None")
             with gr.Row():
-                db_btn = gr.Button("Generate vector database...")
+                db_btn = gr.Button("Generate vector database")
             
-        with gr.Tab("Step 2 - QA chain initialization"):
+        with gr.Tab("Step 3 - Initialize QA chain"):
             with gr.Row():
                 llm_btn = gr.Radio(list_llm_simple, \
                     label="LLM models", value = list_llm_simple[0], type="index", info="Choose your LLM model")
@@ -321,9 +326,9 @@ def demo():
             with gr.Row():
                 llm_progress = gr.Textbox(value="None",label="QA chain initialization")
             with gr.Row():
-                qachain_btn = gr.Button("Initialize question-answering chain...")
+                qachain_btn = gr.Button("Initialize Question Answering chain")
 
-        with gr.Tab("Step 3 - Conversation with chatbot"):
+        with gr.Tab("Step 4 - Chatbot"):
             chatbot = gr.Chatbot(height=300)
             with gr.Accordion("Advanced - Document references", open=False):
                 with gr.Row():
@@ -336,10 +341,10 @@ def demo():
                     doc_source3 = gr.Textbox(label="Reference 3", lines=2, container=True, scale=20)
                     source3_page = gr.Number(label="Page", scale=1)
             with gr.Row():
-                msg = gr.Textbox(placeholder="Type message", container=True)
+                msg = gr.Textbox(placeholder="Type message (e.g. 'What is this document about?')", container=True)
             with gr.Row():
-                submit_btn = gr.Button("Submit")
-                clear_btn = gr.ClearButton([msg, chatbot])
+                submit_btn = gr.Button("Submit message")
+                clear_btn = gr.ClearButton([msg, chatbot], value="Clear conversation")
             
         # Preprocessing events
         #upload_btn.upload(upload_file, inputs=[upload_btn], outputs=[document])
