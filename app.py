@@ -120,7 +120,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             top_k = top_k,
         )
     elif llm_model == "microsoft/phi-2":
-        raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
+        # raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
         llm = HuggingFaceEndpoint(
             repo_id=llm_model, 
             # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
