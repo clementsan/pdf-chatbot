@@ -2,6 +2,7 @@ torch
 transformers
 sentence-transformers
 langchain
+langchain-community
 tqdm
 accelerate
 pypdf
