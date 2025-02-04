@@ -36,14 +36,10 @@ list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 # Load PDF document and create doc splits
 def load_doc(list_file_path, chunk_size, chunk_overlap):
-    # Processing for one document only
-    # loader = PyPDFLoader(file_path)
-    # pages = loader.load()
     loaders = [PyPDFLoader(x) for x in list_file_path]
     pages = []
     for loader in loaders:
         pages.extend(loader.load())
-    # text_splitter = RecursiveCharacterTextSplitter(chunk_size = 600, chunk_overlap = 50)
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size = chunk_size, 
         chunk_overlap = chunk_overlap)
@@ -77,26 +73,6 @@ def load_db():
 # Initialize langchain LLM chain
 def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
     progress(0.1, desc="Initializing HF tokenizer...")
-    # HuggingFacePipeline uses local model
-    # Note: it will download model locally...
-    # tokenizer=AutoTokenizer.from_pretrained(llm_model)
-    # progress(0.5, desc="Initializing HF pipeline...")
-    # pipeline=transformers.pipeline(
-    #     "text-generation",
-    #     model=llm_model,
-    #     tokenizer=tokenizer,
-    #     torch_dtype=torch.bfloat16,
-    #     trust_remote_code=True,
-    #     device_map="auto",
-    #     # max_length=1024,
-    #     max_new_tokens=max_tokens,
-    #     do_sample=True,
-    #     top_k=top_k,
-    #     num_return_sequences=1,
-    #     eos_token_id=tokenizer.eos_token_id
-    #     )
-    # llm = HuggingFacePipeline(pipeline=pipeline, model_kwargs={'temperature': temperature})
-    
     # HuggingFaceHub uses HF inference endpoints
     progress(0.5, desc="Initializing HF Hub...")
     # Use of trust_remote_code as model_kwargs
@@ -268,16 +244,6 @@ def conversation(qa_chain, message, history):
     return qa_chain, gr.update(value=""), new_history, response_source1, response_source1_page, response_source2, response_source2_page, response_source3, response_source3_page
     
 
-def upload_file(file_obj):
-    list_file_path = []
-    for idx, file in enumerate(file_obj):
-        file_path = file_obj.name
-        list_file_path.append(file_path)
-    # print(file_path)
-    # initialize_database(file_path, progress)
-    return list_file_path
-
-
 def demo():
     with gr.Blocks(theme="base") as demo:
         vector_db = gr.State()
@@ -297,7 +263,6 @@ def demo():
         with gr.Tab("Step 1 - Upload PDF"):
             with gr.Row():
                 document = gr.File(height=200, file_count="multiple", file_types=[".pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
-                # upload_btn = gr.UploadButton("Loading document...", height=100, file_count="multiple", file_types=["pdf"], scale=1)
         
         with gr.Tab("Step 2 - Process document"):
             with gr.Row():
@@ -347,7 +312,6 @@ def demo():
                 clear_btn = gr.ClearButton(components=[msg, chatbot], value="Clear conversation")
             
         # Preprocessing events
-        #upload_btn.upload(upload_file, inputs=[upload_btn], outputs=[document])
         db_btn.click(initialize_database, \
             inputs=[document, slider_chunk_size, slider_chunk_overlap], \
             outputs=[vector_db, collection_name, db_progress])
