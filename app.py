@@ -296,7 +296,7 @@ def demo():
         
         with gr.Tab("Step 1 - Upload PDF"):
             with gr.Row():
-                document = gr.Files(height=100, file_count="multiple", file_types=["pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
+                document = gr.File(height=200, file_count="multiple", file_types=[".pdf"], interactive=True, label="Upload your PDF documents (single or multiple)")
                 # upload_btn = gr.UploadButton("Loading document...", height=100, file_count="multiple", file_types=["pdf"], scale=1)
         
         with gr.Tab("Step 2 - Process document"):
@@ -344,7 +344,7 @@ def demo():
                 msg = gr.Textbox(placeholder="Type message (e.g. 'What is this document about?')", container=True)
             with gr.Row():
                 submit_btn = gr.Button("Submit message")
-                clear_btn = gr.ClearButton([msg, chatbot], value="Clear conversation")
+                clear_btn = gr.ClearButton(components=[msg, chatbot], value="Clear conversation")
             
         # Preprocessing events
         #upload_btn.upload(upload_file, inputs=[upload_btn], outputs=[document])
