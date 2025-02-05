@@ -23,13 +23,14 @@ import re
 
 
 # default_persist_directory = './chroma_HF/'
-list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.1", \
-    "google/gemma-7b-it","google/gemma-2b-it", \
-    "HuggingFaceH4/zephyr-7b-beta", "HuggingFaceH4/zephyr-7b-gemma-v0.1", \
-    "meta-llama/Llama-2-7b-chat-hf", "microsoft/phi-2", \
-    "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "mosaicml/mpt-7b-instruct", "tiiuae/falcon-7b-instruct", \
-    "google/flan-t5-xxl"
-]
+# list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.1", \
+#     "google/gemma-7b-it","google/gemma-2b-it", \
+#     "HuggingFaceH4/zephyr-7b-beta", "HuggingFaceH4/zephyr-7b-gemma-v0.1", \
+#     "meta-llama/Llama-2-7b-chat-hf", "microsoft/phi-2", \
+#     "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "mosaicml/mpt-7b-instruct", "tiiuae/falcon-7b-instruct", \
+#     "google/flan-t5-xxl"
+# ]
+list_llm = ["mistralai/Mistral-7B-Instruct-v0.2"]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 
@@ -80,62 +81,70 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     # Warning: langchain issue
     # URL: https://github.com/langchain-ai/langchain/issues/6080
 
-    WARNING - simplify LLM use
-    if llm_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "load_in_8bit": True}
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-            load_in_8bit = True,
-        )
-    elif llm_model in ["HuggingFaceH4/zephyr-7b-gemma-v0.1","mosaicml/mpt-7b-instruct"]:
-        raise gr.Error("LLM model is too large to be loaded automatically on free inference endpoint")
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-        )
-    elif llm_model == "microsoft/phi-2":
-        # raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-            trust_remote_code = True,
-            torch_dtype = "auto",
-        )
-    elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": 250, "top_k": top_k}
-            temperature = temperature,
-            max_new_tokens = 250,
-            top_k = top_k,
-        )
-    elif llm_model == "meta-llama/Llama-2-7b-chat-hf":
-        raise gr.Error("Llama-2-7b-chat-hf model requires a Pro subscription...")
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-        )
-    else:
-        llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-        )
+    # WARNING - simplify LLM use
+    # if llm_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "load_in_8bit": True}
+    #         temperature = temperature,
+    #         max_new_tokens = max_tokens,
+    #         top_k = top_k,
+    #         load_in_8bit = True,
+    #     )
+    # elif llm_model in ["HuggingFaceH4/zephyr-7b-gemma-v0.1","mosaicml/mpt-7b-instruct"]:
+    #     raise gr.Error("LLM model is too large to be loaded automatically on free inference endpoint")
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         temperature = temperature,
+    #         max_new_tokens = max_tokens,
+    #         top_k = top_k,
+    #     )
+    # elif llm_model == "microsoft/phi-2":
+    #     # raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+    #         temperature = temperature,
+    #         max_new_tokens = max_tokens,
+    #         top_k = top_k,
+    #         trust_remote_code = True,
+    #         torch_dtype = "auto",
+    #     )
+    # elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": 250, "top_k": top_k}
+    #         temperature = temperature,
+    #         max_new_tokens = 250,
+    #         top_k = top_k,
+    #     )
+    # elif llm_model == "meta-llama/Llama-2-7b-chat-hf":
+    #     raise gr.Error("Llama-2-7b-chat-hf model requires a Pro subscription...")
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
+    #         temperature = temperature,
+    #         max_new_tokens = max_tokens,
+    #         top_k = top_k,
+    #     )
+    # else:
+    #     llm = HuggingFaceEndpoint(
+    #         repo_id=llm_model, 
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
+    #         temperature = temperature,
+    #         max_new_tokens = max_tokens,
+    #         top_k = top_k,
+    #     )
 
+    llm = HuggingFaceEndpoint(
+            repo_id=llm_model, 
+            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
+            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
+            temperature = temperature,
+            max_new_tokens = max_tokens,
+            top_k = top_k,
+        )
     
     progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
