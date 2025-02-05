@@ -3,13 +3,12 @@ import os
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.embeddings import HuggingFaceEmbeddings 
-from langchain_community.llms import HuggingFacePipeline
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain_community.llms import HuggingFaceEndpoint
+from langchain_huggingface import HuggingFaceEndpoint
 
 from pathlib import Path
 import chromadb
@@ -23,7 +22,6 @@ import accelerate
 import re
 
 
-
 # default_persist_directory = './chroma_HF/'
 list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.1", \
     "google/gemma-7b-it","google/gemma-2b-it", \
@@ -34,8 +32,11 @@ list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instru
 ]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
+
 # Load PDF document and create doc splits
 def load_doc(list_file_path, chunk_size, chunk_overlap):
+    """Load PDF document and create doc splits"""
+
     loaders = [PyPDFLoader(x) for x in list_file_path]
     pages = []
     for loader in loaders:
@@ -49,7 +50,13 @@ def load_doc(list_file_path, chunk_size, chunk_overlap):
 
 # Create vector database
 def create_db(splits, collection_name):
-    embedding = HuggingFaceEmbeddings()
+    """Create embeddings and vector database"""
+
+    embedding = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+        model_kwargs={'device': 'cpu'},
+        encode_kwargs={'normalize_embeddings': False}
+    )
     new_client = chromadb.EphemeralClient()
     vectordb = Chroma.from_documents(
         documents=splits,
@@ -61,23 +68,19 @@ def create_db(splits, collection_name):
     return vectordb
 
 
-# Load vector database
-def load_db():
-    embedding = HuggingFaceEmbeddings()
-    vectordb = Chroma(
-        # persist_directory=default_persist_directory, 
-        embedding_function=embedding)
-    return vectordb
-
 
 # Initialize langchain LLM chain
 def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, progress=gr.Progress()):
+    """Initialize Langchain LLM chain"""
+
     progress(0.1, desc="Initializing HF tokenizer...")
     # HuggingFaceHub uses HF inference endpoints
     progress(0.5, desc="Initializing HF Hub...")
     # Use of trust_remote_code as model_kwargs
     # Warning: langchain issue
     # URL: https://github.com/langchain-ai/langchain/issues/6080
+
+    WARNING - simplify LLM use
     if llm_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
         llm = HuggingFaceEndpoint(
             repo_id=llm_model, 
@@ -132,6 +135,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             max_new_tokens = max_tokens,
             top_k = top_k,
         )
+
     
     progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
