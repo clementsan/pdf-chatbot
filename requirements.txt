@@ -12,3 +12,4 @@ pypdf
 chromadb
 unidecode
 gradio
+python-dotenv
