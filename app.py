@@ -10,6 +10,7 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
 
+
 from pathlib import Path
 import chromadb
 from unidecode import unidecode
@@ -21,6 +22,12 @@ import tqdm
 import accelerate
 import re
 
+from dotenv import load_dotenv
+
+
+# Load environment file - HuggingFace API key
+_ = load_dotenv()
+huggingfacehub_api_token = os.environ.get("HUGGINGFACE_API_KEY")
 
 # default_persist_directory = './chroma_HF/'
 # list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.1", \
@@ -90,6 +97,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         max_new_tokens = max_tokens,
     #         top_k = top_k,
     #         load_in_8bit = True,
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
     # elif llm_model in ["HuggingFaceH4/zephyr-7b-gemma-v0.1","mosaicml/mpt-7b-instruct"]:
     #     raise gr.Error("LLM model is too large to be loaded automatically on free inference endpoint")
@@ -98,6 +106,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         temperature = temperature,
     #         max_new_tokens = max_tokens,
     #         top_k = top_k,
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
     # elif llm_model == "microsoft/phi-2":
     #     # raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
@@ -109,6 +118,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         top_k = top_k,
     #         trust_remote_code = True,
     #         torch_dtype = "auto",
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
     # elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
     #     llm = HuggingFaceEndpoint(
@@ -117,6 +127,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         temperature = temperature,
     #         max_new_tokens = 250,
     #         top_k = top_k,
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
     # elif llm_model == "meta-llama/Llama-2-7b-chat-hf":
     #     raise gr.Error("Llama-2-7b-chat-hf model requires a Pro subscription...")
@@ -126,6 +137,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         temperature = temperature,
     #         max_new_tokens = max_tokens,
     #         top_k = top_k,
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
     # else:
     #     llm = HuggingFaceEndpoint(
@@ -135,8 +147,8 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     #         temperature = temperature,
     #         max_new_tokens = max_tokens,
     #         top_k = top_k,
+    #         huggingfacehub_api_token=huggingfacehub_api_token,
     #     )
-
     llm = HuggingFaceEndpoint(
             repo_id=llm_model, 
             # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
@@ -144,6 +156,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
             temperature = temperature,
             max_new_tokens = max_tokens,
             top_k = top_k,
+            huggingfacehub_api_token=huggingfacehub_api_token,
         )
     
     progress(0.75, desc="Defining buffer memory...")
@@ -166,6 +179,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         verbose=False,
     )
     progress(0.9, desc="Done!")
+
     return qa_chain
 
 
@@ -236,7 +250,7 @@ def conversation(qa_chain, message, history):
     #print("formatted_chat_history",formatted_chat_history)
    
     # Generate response using QA chain
-    response = qa_chain({"question": message, "chat_history": formatted_chat_history})
+    response = qa_chain.invoke({"question": message, "chat_history": formatted_chat_history})
     response_answer = response["answer"]
     if response_answer.find("Helpful Answer:") != -1:
         response_answer = response_answer.split("Helpful Answer:")[-1]
