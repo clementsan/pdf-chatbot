@@ -3,6 +3,8 @@ transformers
 sentence-transformers
 langchain
 langchain-community
+langchain-huggingface
+langchain-chroma
 tqdm
 accelerate
 pypdf
