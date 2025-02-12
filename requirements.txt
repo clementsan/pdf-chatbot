@@ -5,6 +5,7 @@ langchain
 langchain-community
 langchain-huggingface
 langchain-chroma
+huggingface-hub
 tqdm
 accelerate
 pypdf
