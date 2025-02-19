@@ -59,9 +59,9 @@ def create_db(splits, collection_name):
     """Create embeddings and vector database"""
 
     embedding = HuggingFaceEmbeddings(
-        # model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+        model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
         # model_name="sentence-transformers/all-MiniLM-L6-v2",
-        # model_kwargs={'device': 'cpu'},
+        model_kwargs={'device': 'cpu'},
         # encode_kwargs={'normalize_embeddings': False}
     )
     new_client = chromadb.EphemeralClient()
