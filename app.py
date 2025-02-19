@@ -10,7 +10,6 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
 
-
 from pathlib import Path
 import chromadb
 from unidecode import unidecode
@@ -29,15 +28,14 @@ from dotenv import load_dotenv
 _ = load_dotenv()
 huggingfacehub_api_token = os.environ.get("HUGGINGFACE_API_KEY")
 
+
 # default_persist_directory = './chroma_HF/'
-# list_llm = ["mistralai/Mistral-7B-Instruct-v0.2", "mistralai/Mixtral-8x7B-Instruct-v0.1", "mistralai/Mistral-7B-Instruct-v0.1", \
-#     "google/gemma-7b-it","google/gemma-2b-it", \
-#     "HuggingFaceH4/zephyr-7b-beta", "HuggingFaceH4/zephyr-7b-gemma-v0.1", \
-#     "meta-llama/Llama-2-7b-chat-hf", "microsoft/phi-2", \
-#     "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "mosaicml/mpt-7b-instruct", "tiiuae/falcon-7b-instruct", \
-#     "google/flan-t5-xxl"
-# ]
-list_llm = ["mistralai/Mistral-7B-Instruct-v0.2"]
+list_llm = ["mistralai/Mistral-7B-Instruct-v0.3", "microsoft/Phi-3.5-mini-instruct", \
+    "meta-llama/Llama-3.2-3B-Instruct", "meta-llama/Llama-3.2-1B-Instruct", "meta-llama/Meta-Llama-3-8B-Instruct", \
+    "HuggingFaceH4/zephyr-7b-beta", "HuggingFaceH4/zephyr-7b-gemma-v0.1", \
+    "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "google/gemma-2-2b-it", "google/gemma-2-9b-it", \
+    "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-3B-Instruct", "Qwen/Qwen2.5-7B-Instruct",
+]
 list_llm_simple = [os.path.basename(llm) for llm in list_llm]
 
 
@@ -61,9 +59,10 @@ def create_db(splits, collection_name):
     """Create embeddings and vector database"""
 
     embedding = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
-        model_kwargs={'device': 'cpu'},
-        encode_kwargs={'normalize_embeddings': False}
+        # model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+        # model_name="sentence-transformers/all-MiniLM-L6-v2",
+        # model_kwargs={'device': 'cpu'},
+        # encode_kwargs={'normalize_embeddings': False}
     )
     new_client = chromadb.EphemeralClient()
     vectordb = Chroma.from_documents(
@@ -88,76 +87,15 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     # Warning: langchain issue
     # URL: https://github.com/langchain-ai/langchain/issues/6080
 
-    # WARNING - simplify LLM use
-    # if llm_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "load_in_8bit": True}
-    #         temperature = temperature,
-    #         max_new_tokens = max_tokens,
-    #         top_k = top_k,
-    #         load_in_8bit = True,
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
-    # elif llm_model in ["HuggingFaceH4/zephyr-7b-gemma-v0.1","mosaicml/mpt-7b-instruct"]:
-    #     raise gr.Error("LLM model is too large to be loaded automatically on free inference endpoint")
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         temperature = temperature,
-    #         max_new_tokens = max_tokens,
-    #         top_k = top_k,
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
-    # elif llm_model == "microsoft/phi-2":
-    #     # raise gr.Error("phi-2 model requires 'trust_remote_code=True', currently not supported by langchain HuggingFaceHub...")
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
-    #         temperature = temperature,
-    #         max_new_tokens = max_tokens,
-    #         top_k = top_k,
-    #         trust_remote_code = True,
-    #         torch_dtype = "auto",
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
-    # elif llm_model == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": 250, "top_k": top_k}
-    #         temperature = temperature,
-    #         max_new_tokens = 250,
-    #         top_k = top_k,
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
-    # elif llm_model == "meta-llama/Llama-2-7b-chat-hf":
-    #     raise gr.Error("Llama-2-7b-chat-hf model requires a Pro subscription...")
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
-    #         temperature = temperature,
-    #         max_new_tokens = max_tokens,
-    #         top_k = top_k,
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
-    # else:
-    #     llm = HuggingFaceEndpoint(
-    #         repo_id=llm_model, 
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
-    #         # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
-    #         temperature = temperature,
-    #         max_new_tokens = max_tokens,
-    #         top_k = top_k,
-    #         huggingfacehub_api_token=huggingfacehub_api_token,
-    #     )
+    
     llm = HuggingFaceEndpoint(
-            repo_id=llm_model, 
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k, "trust_remote_code": True, "torch_dtype": "auto"}
-            # model_kwargs={"temperature": temperature, "max_new_tokens": max_tokens, "top_k": top_k}
-            temperature = temperature,
-            max_new_tokens = max_tokens,
-            top_k = top_k,
-            huggingfacehub_api_token=huggingfacehub_api_token,
-        )
+        repo_id=llm_model,
+        task = "text-generation",
+        temperature = temperature,
+        max_new_tokens = max_tokens,
+        top_k = top_k,
+        huggingfacehub_api_token=huggingfacehub_api_token,
+    )
     
     progress(0.75, desc="Defining buffer memory...")
     memory = ConversationBufferMemory(
@@ -173,7 +111,7 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
         retriever=retriever,
         chain_type="stuff", 
         memory=memory,
-        # combine_docs_chain_kwargs={"prompt": your_prompt})
+        # combine_docs_chain_kwargs={"prompt": rag_prompt},
         return_source_documents=True,
         #return_generated_question=False,
         verbose=False,
