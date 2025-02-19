@@ -75,6 +75,7 @@ def create_db(splits, collection_name):
         model_kwargs={'device': 'cpu'},
         # encode_kwargs={'normalize_embeddings': False}
     )
+    chromadb.api.client.SharedSystemClient.clear_system_cache()
     new_client = chromadb.EphemeralClient()
     vectordb = Chroma.from_documents(
         documents=splits,
@@ -156,7 +157,7 @@ def create_collection_name(filepath):
         collection_name = 'A' + collection_name[1:]
     if not collection_name[-1].isalnum():
         collection_name = collection_name[:-1] + 'Z'
-    print('Filepath: ', filepath)
+    print('\n\nFilepath: ', filepath)
     print('Collection name: ', collection_name)
     return collection_name
 
