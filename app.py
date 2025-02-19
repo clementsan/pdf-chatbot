@@ -9,6 +9,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
+from langchain_core.prompts import PromptTemplate
 
 from pathlib import Path
 import chromadb
@@ -27,6 +28,16 @@ from dotenv import load_dotenv
 # Load environment file - HuggingFace API key
 _ = load_dotenv()
 huggingfacehub_api_token = os.environ.get("HUGGINGFACE_API_KEY")
+
+
+# Add system template for RAG application
+prompt_template = """
+You are an assistant for question-answering tasks. Use the following pieces of context to answer the question at the end. 
+If you don't know the answer, just say that you don't know, don't try to make up an answer. Keep the answer concise.
+Question: {question} 
+Context: {context} 
+Helpful Answer:
+""" 
 
 
 # default_persist_directory = './chroma_HF/'
@@ -106,12 +117,13 @@ def initialize_llmchain(llm_model, temperature, max_tokens, top_k, vector_db, pr
     # retriever=vector_db.as_retriever(search_type="similarity", search_kwargs={'k': 3})
     retriever=vector_db.as_retriever()
     progress(0.8, desc="Defining retrieval chain...")
+    rag_prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) 
     qa_chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=retriever,
         chain_type="stuff", 
         memory=memory,
-        # combine_docs_chain_kwargs={"prompt": rag_prompt},
+        combine_docs_chain_kwargs={"prompt": rag_prompt},
         return_source_documents=True,
         #return_generated_question=False,
         verbose=False,
