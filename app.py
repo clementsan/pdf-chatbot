@@ -283,7 +283,7 @@ def demo():
                     doc_source3 = gr.Textbox(label="Reference 3", lines=2, container=True, scale=20)
                     source3_page = gr.Number(label="Page", scale=1)
             with gr.Row():
-                msg = gr.Textbox(placeholder="Type message (e.g. 'What is this document about?')", container=True)
+                msg = gr.Textbox(placeholder="Type message (e.g. 'Can you summarize this document in one paragraph?')", container=True)
             with gr.Row():
                 submit_btn = gr.Button("Submit message")
                 clear_btn = gr.ClearButton(components=[msg, chatbot], value="Clear conversation")
