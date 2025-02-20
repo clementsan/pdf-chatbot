@@ -29,8 +29,15 @@ pinned: true
    - LangChain conversational retrieval chain
 
 
+You can try out the deployed [Hugging Face Space](https://huggingface.co/spaces/cvachet/pdf-chatbot)!
+
+
+----
+
+### Overview
+
 **Description:**
- - This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. The user interface explicitely shows multiple steps to help understand the RAG workflow. This chatbot takes past questions into account when generating answers (via conversational memory), and includes document references for clarity purposes. It leverages small LLM models to run directly on CPU hardware. 
+This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. The user interface explicitely shows multiple steps to help understand the RAG workflow. This chatbot takes past questions into account when generating answers (via conversational memory), and includes document references for clarity purposes. It leverages small LLM models to run directly on CPU hardware. 
 
 
 **Available open-source LLMs:**
@@ -42,5 +49,10 @@ pinned: true
  - HuggingFace zephyr and SmolLM series
 
 
- You can try out the deployed [Hugging Face Space](https://huggingface.co/spaces/cvachet/pdf-chatbot)!
+### Local execution
+
+Command line for execution:
+> python3 app.py
+
+The Gradio web application should now be accessible at http://localhost:7860
 
