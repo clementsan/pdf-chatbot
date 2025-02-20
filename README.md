@@ -15,6 +15,9 @@ pinned: true
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 
 
+![example workflow](https://github.com/clementsan/pdf-chatbot/actions/workflows/sync_HFSpace.yml/badge.svg)
+
+
 **Aim: PDF-based AI chatbot with retrieval augmented generation**
 
 
@@ -23,7 +26,7 @@ pinned: true
    - user interface via Gradio library
  - Back-end: 
    - HuggingFace embeddings
-   - HuggingFace API for open-source LLMs
+   - HuggingFace Inference API for open-source LLMs
    - Chromadb vector database
    - LangChain conversational retrieval chain
 
