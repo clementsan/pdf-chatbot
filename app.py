@@ -15,9 +15,10 @@ import retrieval
 list_llm = [
     "mistralai/Mistral-7B-Instruct-v0.3",
     "microsoft/Phi-3.5-mini-instruct",
+    "meta-llama/Meta-Llama-3-8B-Instruct",
     "meta-llama/Llama-3.2-3B-Instruct",
     "meta-llama/Llama-3.2-1B-Instruct",
-    "meta-llama/Meta-Llama-3-8B-Instruct",
+    "HuggingFaceTB/SmolLM2-1.7B-Instruct",
     "HuggingFaceH4/zephyr-7b-beta",
     "HuggingFaceH4/zephyr-7b-gemma-v0.1",
     "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
