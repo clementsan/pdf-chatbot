@@ -116,9 +116,10 @@ SPACE_TITLE = """
 """
 
 SPACE_INFO = """
-<b>Note:</b> This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. \
+<b>Description:</b> This AI assistant, using Langchain and open-source LLMs, performs retrieval-augmented generation (RAG) from your PDF documents. \
 The user interface explicitely shows multiple steps to help understand the RAG workflow. 
 This chatbot takes past questions into account when generating answers (via conversational memory), and includes document references for clarity purposes.<br>
+<br><b>Notes:</b> Updated space with more recent LLM models (Qwen 2.5, Llama 3.2, SmolLM2 series) 
 <br><b>Warning:</b> This space uses the free CPU Basic hardware from Hugging Face. Some steps and LLM models used below (free inference endpoints) can take some time to generate a reply.
 """
 
