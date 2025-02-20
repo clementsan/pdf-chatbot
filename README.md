@@ -15,8 +15,6 @@ pinned: true
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 
 
-![example workflow](https://github.com/clementsan/pdf-chatbot/actions/workflows/sync_HFSpace.yml/badge.svg)
-
 
 **Aim: PDF-based AI chatbot with retrieval augmented generation**
 
