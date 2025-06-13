@@ -229,7 +229,7 @@ def gradio_ui():
                 qachain_btn = gr.Button("Initialize Question Answering chain")
 
         with gr.Tab("Step 4 - Chatbot"):
-            chatbot = gr.Chatbot(height=300)
+            chatbot = gr.Chatbot(height=300, type="messages")
             with gr.Accordion("Advanced - Document references", open=False):
                 with gr.Row():
                     doc_source1 = gr.Textbox(
