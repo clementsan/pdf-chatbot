@@ -40,9 +40,17 @@ def initialize_llmchain(
     # Warning: langchain issue
     # URL: https://github.com/langchain-ai/langchain/issues/6080
 
+    # if 'Llama' in llm_model:
+    #     task = "conversational"
+    # else:
+    #     task = "text-generation"
+    # print(f"Task: {task}")
+
     llm = HuggingFaceEndpoint(
         repo_id=llm_model,
         task="text-generation",
+        #task="conversational",
+        provider="hf-inference",
         temperature=temperature,
         max_new_tokens=max_tokens,
         top_k=top_k,
