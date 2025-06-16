@@ -188,7 +188,7 @@ def gradio_ui():
                 llm_btn = gr.Radio(
                     list_llm_simple,
                     label="LLM models",
-                    value=list_llm_simple[1],
+                    value=list_llm_simple[6],
                     type="index",
                     info="Choose your LLM model",
                 )
